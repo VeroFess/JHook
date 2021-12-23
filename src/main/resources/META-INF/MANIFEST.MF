@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
+Agent-Class: com.binklac.jhook.JHookAgent
+Main-Class: com.binklac.jhook.test.JHookTest
+Launcher-Agent-Class: com.binklac.jhook.JHookAgent
