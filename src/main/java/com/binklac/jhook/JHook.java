@@ -16,33 +16,35 @@ public class JHook {
     }
 
     public synchronized static JHook Instance() {
-        try {
-            SelfInstance = new JHook();
-
-            if (SelfInstance.getClass().getClassLoader().equals(ClassLoader.getSystemClassLoader())) {
-                Boolean LoadSystemLibraryResult = JHookDynamicallyLoader.TryLoadSystemLibrary();
-                Boolean InitializeJHookEnvironmentResult = JHookAgentLoader.InitializeJHookEnvironment();
-
-                if (!(LoadSystemLibraryResult && InitializeJHookEnvironmentResult)) {
-                    SelfInstance = null;
-                }
-
-                GlobalInstance = SelfInstance.getClass();
-            } else {
-                GlobalInstance = Class.forName(JHook.class.getCanonicalName(), false, ClassLoader.getSystemClassLoader());
-            }
-        } catch(ClassNotFoundException e) {
+        if(SelfInstance == null){
             try {
-                Boolean LoadSystemLibraryResult = JHookDynamicallyLoader.TryLoadSystemLibrary();
-                Boolean InitializeJHookEnvironmentResult = JHookAgentLoader.InitializeJHookEnvironment();
+                SelfInstance = new JHook();
 
-                if (!(LoadSystemLibraryResult && InitializeJHookEnvironmentResult)) {
+                if (SelfInstance.getClass().getClassLoader().equals(ClassLoader.getSystemClassLoader())) {
+                    Boolean LoadSystemLibraryResult = JHookDynamicallyLoader.TryLoadSystemLibrary();
+                    Boolean InitializeJHookEnvironmentResult = JHookAgentLoader.InitializeJHookEnvironment();
+
+                    if (!(LoadSystemLibraryResult && InitializeJHookEnvironmentResult)) {
+                        SelfInstance = null;
+                    }
+
+                    GlobalInstance = SelfInstance.getClass();
+                } else {
+                    GlobalInstance = Class.forName(JHook.class.getCanonicalName(), false, ClassLoader.getSystemClassLoader());
+                }
+            } catch(ClassNotFoundException e) {
+                try {
+                    Boolean LoadSystemLibraryResult = JHookDynamicallyLoader.TryLoadSystemLibrary();
+                    Boolean InitializeJHookEnvironmentResult = JHookAgentLoader.InitializeJHookEnvironment();
+
+                    if (!(LoadSystemLibraryResult && InitializeJHookEnvironmentResult)) {
+                        SelfInstance = null;
+                    }
+
+                    GlobalInstance = Class.forName(JHook.class.getCanonicalName(), false, ClassLoader.getSystemClassLoader());
+                } catch (ClassNotFoundException ex) {
                     SelfInstance = null;
                 }
-
-                GlobalInstance = Class.forName(JHook.class.getCanonicalName(), false, ClassLoader.getSystemClassLoader());
-            } catch (ClassNotFoundException ex) {
-                SelfInstance = null;
             }
         }
 
